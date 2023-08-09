@@ -14,21 +14,21 @@ ORDER BY
 --2. Get a list of sales with the VIN of the vehicle, the first name and last name of the customer, 
 --   first name and last name of the employee who made the sale and the name, city and state of the dealership.
 	
---SELECT 
---	v.vin,
---	c.first_name AS customer_first_name,
---	c.last_name AS customer_last_name,
---	e.first_name AS employee_first_name,
---	e.last_name AS employee_last_name,
---	d.business_name AS dealership_name,
---	d.city,
---	d.state 
---FROM 
---	sales s
---JOIN vehicles v ON	v.vehicle_id = s.vehicle_id 
---JOIN customers c ON	c.customer_id = s.customer_id 
---JOIN employees e ON	e.employee_id = s.employee_id 
---JOIN dealerships d ON d.dealership_id = s.dealership_id 
+SELECT 
+	v.vin,
+	c.first_name AS customer_first_name,
+	c.last_name AS customer_last_name,
+	e.first_name AS employee_first_name,
+	e.last_name AS employee_last_name,
+	d.business_name AS dealership_name,
+	d.city,
+	d.state 
+FROM 
+	sales s
+JOIN vehicles v ON	v.vehicle_id = s.vehicle_id 
+JOIN customers c ON	c.customer_id = s.customer_id 
+JOIN employees e ON	e.employee_id = s.employee_id 
+JOIN dealerships d ON d.dealership_id = s.dealership_id 
 
 
 --3. Get a list of all the dealerships and the employees, if any, working at each one.
