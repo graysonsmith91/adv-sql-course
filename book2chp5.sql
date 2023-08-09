@@ -1,5 +1,6 @@
 -- Use a self join to list all sales that will be picked up on the same day,
--- including the full name of customer picking up the vehicle. .
+-- including the full name of customer picking up the vehicle.
+
 SELECT
     CONCAT  (c.first_name, ' ', c.last_name) AS last_name,
     s1.invoice_number,
