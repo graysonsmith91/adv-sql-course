@@ -68,6 +68,19 @@ LIMIT 1;
 
 
 
+-- What is the most popular vehicle make in terms of number of sales?
+SELECT 
+	vt.make , 
+	COUNT(vt.make) AS number_of_purchases
+FROM sales s 
+LEFT JOIN vehicles v ON v.vehicle_id = s.vehicle_id 
+LEFT JOIN vehicletypes vt ON vt.vehicle_type_id = v.vehicle_type_id 
+WHERE s.sales_type_id = 1
+GROUP BY vt.make
+ORDER BY number_of_purchases DESC
+LIMIT 1;
+
+
 
 
 
