@@ -80,7 +80,22 @@ GROUP BY vt.make
 ORDER BY number_of_purchases DESC
 LIMIT 1;
 
+--NISSAN
 
+-- Which employee type sold the most of that make?
+SELECT 
+	et.employee_type_name,
+	vt.make,
+	COUNT(vt.make) AS vehicles_sold
+FROM sales s
+LEFT JOIN employees e ON e.employee_id = s.employee_id 
+LEFT JOIN employeetypes et ON et.employee_type_id = e.employee_type_id 
+LEFT JOIN vehicles v ON v.vehicle_id = s.vehicle_id 
+LEFT JOIN vehicletypes vt ON vt.vehicle_type_id = v.vehicle_type_id 
+WHERE vt.make = 'Nissan' AND s.sales_type_id = 1
+GROUP BY vt.make, et.employee_type_name
+ORDER BY vehicles_sold DESC
+LIMIT 1;
 
 
 
