@@ -9,4 +9,6 @@ INNER JOIN sales s2
     ON s1.sale_id <> s2.sale_id 
     AND s1.pickup_date = s2.pickup_date
 INNER JOIN customers c
-   ON c.customer_id = s1.customer_id;
+   ON c.customer_id = s1.customer_id
+GROUP BY c.first_name, c.last_name, s1.invoice_number, s1.pickup_date
+ORDER BY s1.pickup_date;
