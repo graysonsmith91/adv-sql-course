@@ -54,6 +54,21 @@ ORDER BY d.business_name;
 
 
 
+-- Produce a report that determines the most popular vehicle model that is leased.
+SELECT 
+	vt.model, 
+	COUNT(vt.model) AS number_of_leases
+FROM sales s 
+LEFT JOIN vehicles v ON v.vehicle_id = s.vehicle_id 
+LEFT JOIN vehicletypes vt ON vt.vehicle_type_id = v.vehicle_type_id 
+WHERE s.sales_type_id = 2
+GROUP BY vt.model
+ORDER BY number_of_leases DESC
+LIMIT 1;
+
+
+
+
 
 
 
