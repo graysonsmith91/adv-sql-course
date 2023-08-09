@@ -48,14 +48,14 @@ ORDER BY
 
 --4. Get a list of vehicles with the names of the body type, make, model and color.
 
---SELECT 
---	vt.body_type,
---	vt.make,
---	vt.model,
---	v.exterior_color 
---FROM 
---	vehicles v
---JOIN vehicletypes vt ON vt.vehicle_type_id = v.vehicle_type_id  
+SELECT 
+	vt.body_type,
+	vt.make,
+	vt.model,
+	v.exterior_color 
+FROM 
+	vehicles v
+JOIN vehicletypes vt ON vt.vehicle_type_id = v.vehicle_type_id  
 
 
 	
