@@ -33,17 +33,17 @@ JOIN dealerships d ON d.dealership_id = s.dealership_id
 
 --3. Get a list of all the dealerships and the employees, if any, working at each one.
 
---SELECT 
---	d.business_name AS dealership_name,
---	e.first_name AS employee_first_name,
---	e.last_name AS employee_last_name,
---	de.employee_id
---FROM 
---	dealerships d
---JOIN dealershipemployees de ON de.dealership_id = d.dealership_id 
---JOIN employees e ON	e.employee_id = de.employee_id 
---ORDER BY 
---	d.business_name 
+SELECT 
+	d.business_name AS dealership_name,
+	e.first_name AS employee_first_name,
+	e.last_name AS employee_last_name,
+	de.employee_id
+FROM 
+	dealerships d
+JOIN dealershipemployees de ON de.dealership_id = d.dealership_id 
+JOIN employees e ON	e.employee_id = de.employee_id 
+ORDER BY 
+	d.business_name 
 
 
 --4. Get a list of vehicles with the names of the body type, make, model and color.
