@@ -1,4 +1,5 @@
 -- First, you can create a CTE to get cars that require an oil change service.
+
 with vehicles_needing_service as
 (
 	select
@@ -16,6 +17,7 @@ with vehicles_needing_service as
 
 
 -- Once that is defined, you can now query that set of results as part of a larger query to get all of the information needed.
+
 select
 	vs.vehicle_id,
 	vs.miles_count,
@@ -64,6 +66,7 @@ last_purchase as (
 
 
 -- Now you have another CTE that can be used to filter down the results to get the info about the last purchase only.
+
 select
 	vs.vehicle_id,       -- Get vehicle id from first CTE
 	vs.miles_count,      -- Get miles from first CTE
@@ -85,6 +88,7 @@ join customers c
 
 
 -- Top 5 dealerships by sales
+
 SELECT
 	d.dealership_id,
 	d.business_name,
@@ -97,6 +101,7 @@ ORDER BY number_of_sales DESC;
 
 
 -- For the top 5 dealerships, which employees made the most sales?
+
 WITH top_5_dealerships AS 
 (
     SELECT
@@ -117,10 +122,38 @@ SELECT
 FROM top_5_dealerships t5
 JOIN sales s ON s.dealership_id = t5.dealership_id
 JOIN employees e ON e.employee_id = s.employee_id 
+WHERE s.sales_type_id = 1
 GROUP BY t5.business_name, e.first_name, e.last_name  
 ORDER BY t5.business_name, employee_sales DESC;
 
 
+
+-- For the top 5 dealerships, which vehicle models were the most popular in sales?
+
+WITH top_5_dealerships AS 
+(
+    SELECT
+        d.dealership_id,
+        d.business_name,
+        COUNT(s.sale_id) AS number_of_sales
+    FROM sales s
+    LEFT JOIN dealerships d ON d.dealership_id = s.dealership_id 
+    GROUP BY d.dealership_id, d.business_name
+    ORDER BY number_of_sales DESC
+    LIMIT 5
+)
+
+SELECT 
+	d.business_name,
+	vt.model,
+	COUNT(vt.model) AS count_of_model
+FROM top_5_dealerships t5
+LEFT JOIN dealerships d ON d.dealership_id = t5.dealership_id
+LEFT JOIN sales s ON s.dealership_id = t5.dealership_id
+LEFT JOIN vehicles v ON v.vehicle_id = s.vehicle_id 
+LEFT JOIN vehicletypes vt ON vt.vehicle_type_id = v.vehicle_type_id 
+GROUP BY d.business_name, vt.model 
+ORDER BY d.business_name, count_of_model DESC;
 
 
 
