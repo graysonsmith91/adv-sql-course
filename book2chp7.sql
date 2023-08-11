@@ -13,6 +13,8 @@ with vehicles_needing_service as
 	where o.date_occured < '2022-01-01'
 )
 
+
+
 -- Once that is defined, you can now query that set of results as part of a larger query to get all of the information needed.
 select
 	vs.vehicle_id,
@@ -59,6 +61,8 @@ last_purchase as (
 	group by s.vehicle_id
 )
 
+
+
 -- Now you have another CTE that can be used to filter down the results to get the info about the last purchase only.
 select
 	vs.vehicle_id,       -- Get vehicle id from first CTE
@@ -78,4 +82,40 @@ join employees e
 join customers c
 	on s.customer_id = c.customer_id
 ;
+
+
+-- Top 5 dealerships by sales
+SELECT
+	d.dealership_id,
+	d.business_name,
+	COUNT(d.business_name) AS number_of_sales
+FROM sales s
+LEFT JOIN dealerships d ON d.dealership_id = s.dealership_id 
+GROUP BY d.dealership_id
+ORDER BY number_of_sales DESC; 
+
+
+
+-- For the top 5 dealerships, which employees made the most sales?
+WITH top_5_dealerships AS 
+(
+	SELECT
+		d.dealership_id,
+		d.business_name,
+		COUNT(d.business_name) AS number_of_sales
+	FROM sales s
+	LEFT JOIN dealerships d ON d.dealership_id = s.dealership_id 
+	GROUP BY d.dealership_id
+	ORDER BY number_of_sales DESC
+	LIMIT 5
+)
+
+SELECT 
+	*
+FROM top_5_dealerships t5
+JOIN sales s ON s.dealership_id = t5.dealership_id
+
+
+
+
 
