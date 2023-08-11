@@ -99,21 +99,29 @@ ORDER BY number_of_sales DESC;
 -- For the top 5 dealerships, which employees made the most sales?
 WITH top_5_dealerships AS 
 (
-	SELECT
-		d.dealership_id,
-		d.business_name,
-		COUNT(d.business_name) AS number_of_sales
-	FROM sales s
-	LEFT JOIN dealerships d ON d.dealership_id = s.dealership_id 
-	GROUP BY d.dealership_id
-	ORDER BY number_of_sales DESC
-	LIMIT 5
+    SELECT
+        d.dealership_id,
+        d.business_name,
+        COUNT(s.sale_id) AS number_of_sales
+    FROM sales s
+    LEFT JOIN dealerships d ON d.dealership_id = s.dealership_id 
+    GROUP BY d.dealership_id, d.business_name
+    ORDER BY number_of_sales DESC
+    LIMIT 5
 )
 
-SELECT 
-	*
+SELECT
+    t5.business_name,
+    e.first_name || ' ' || e.last_name full_name,
+    COUNT(s.sale_id) AS employee_sales
 FROM top_5_dealerships t5
 JOIN sales s ON s.dealership_id = t5.dealership_id
+JOIN employees e ON e.employee_id = s.employee_id 
+GROUP BY t5.business_name, e.first_name, e.last_name  
+ORDER BY t5.business_name, employee_sales DESC;
+
+
+
 
 
 
