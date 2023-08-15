@@ -152,11 +152,87 @@ LEFT JOIN dealerships d ON d.dealership_id = t5.dealership_id
 LEFT JOIN sales s ON s.dealership_id = t5.dealership_id
 LEFT JOIN vehicles v ON v.vehicle_id = s.vehicle_id 
 LEFT JOIN vehicletypes vt ON vt.vehicle_type_id = v.vehicle_type_id 
-GROUP BY d.business_name, vt.model 
+GROUP BY d.business_name, vt.model
 ORDER BY d.business_name, count_of_model DESC;
 
 
 
+-- Same as above, William's example using a window function
+WITH ranked AS 
+
+(			  
+SELECT 
+	business_name,
+	model,
+	COUNT(*) AS total_sales,
+	ROW_NUMBER() OVER(PARTITION BY business_name ORDER BY COUNT(*) DESC) AS model_rank	
+FROM sales
+	LEFT JOIN vehicles USING(vehicle_id)
+	LEFT JOIN vehicletypes USING(vehicle_type_id)
+	LEFT JOIN dealerships USING(dealership_id)
+WHERE dealership_id IN 
+	(SELECT dealership_id 
+	FROM sales
+	GROUP BY dealership_id
+	ORDER BY COUNT(*) DESC
+	LIMIT 5)
+GROUP BY business_name, model
+)
+
+SELECT *
+FROM ranked
+WHERE model_rank = 5 
+ORDER BY business_name, model_rank;
+
+
+
+-- For the top 5 dealerships, were there more sales or leases?
+
+WITH top_5_dealerships AS 
+(
+    SELECT
+        d.dealership_id,
+        d.business_name,
+        COUNT(s.sale_id) AS number_of_sales
+    FROM sales s
+    LEFT JOIN dealerships d ON d.dealership_id = s.dealership_id 
+    GROUP BY d.dealership_id, d.business_name
+    ORDER BY number_of_sales DESC
+    LIMIT 5
+)
+
+SELECT 
+	d.business_name,
+	COUNT(CASE WHEN s.sales_type_id = 1 THEN 1 ELSE NULL END) AS number_of_purchases,
+    COUNT(CASE WHEN s.sales_type_id = 2 THEN 1 ELSE NULL END) AS number_of_leases,
+    COUNT(CASE WHEN s.sales_type_id = 3 THEN 1 ELSE NULL END) AS number_of_rents
+FROM top_5_dealerships t5
+LEFT JOIN dealerships d ON d.dealership_id = t5.dealership_id
+LEFT JOIN sales s ON s.dealership_id = t5.dealership_id
+GROUP BY d.business_name;
+
+
+
+
+-- Checking sales types
+WITH top_5_dealerships AS 
+(
+    SELECT
+        d.dealership_id,
+        d.business_name,
+        COUNT(s.sale_id) AS number_of_sales
+    FROM sales s
+    LEFT JOIN dealerships d ON d.dealership_id = s.dealership_id 
+    GROUP BY d.dealership_id, d.business_name
+    ORDER BY number_of_sales DESC
+    LIMIT 5
+)
+
+SELECT
+	*
+FROM top_5_dealerships t5
+LEFT JOIN dealerships d ON d.dealership_id = t5.dealership_id
+LEFT JOIN sales s ON s.dealership_id = t5.dealership_id
 
 
 
