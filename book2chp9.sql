@@ -19,7 +19,7 @@ order by employee_name
 
 SELECT DISTINCT 
 	d.business_name,
-	SUM(s.price) over(PARTITION BY d.dealership_id) total_dealership_sales 
+	SUM(s.price) OVER(PARTITION BY d.dealership_id) total_dealership_sales 
 FROM sales s 
 LEFT JOIN dealerships d ON d.dealership_id = s.dealership_id
 WHERE s.sales_type_id = 1
@@ -31,7 +31,7 @@ ORDER BY d.business_name;
 
 SELECT DISTINCT 
 	d.business_name,
-	SUM(s.price) over(PARTITION BY d.dealership_id) sales_per_month
+	SUM(s.price) OVER(PARTITION BY d.dealership_id) sales_per_month
 FROM sales s 
 LEFT JOIN dealerships d ON d.dealership_id = s.dealership_id
 WHERE s.sales_type_id = 1 AND s.purchase_date >= '2020-07-01' AND s.purchase_date < '2020-08-01' AND s.sales_type_id = 1
@@ -43,7 +43,7 @@ ORDER BY d.business_name;
 
 SELECT DISTINCT 
 	d.business_name,
-	SUM(s.price) over(PARTITION BY d.dealership_id) total_sales_2020
+	SUM(s.price) OVER(PARTITION BY d.dealership_id) total_sales_2020
 FROM sales s 
 LEFT JOIN dealerships d ON d.dealership_id = s.dealership_id
 WHERE s.sales_type_id = 1 AND s.purchase_date >= '2020-01-01' AND s.purchase_date <= '2020-12-31' AND s.sales_type_id = 1
@@ -51,5 +51,14 @@ ORDER BY d.business_name;
 
 
 
+-- Write a query that shows the total lease income per dealership.
+
+SELECT DISTINCT 
+	d.business_name,
+	SUM(s.price) OVER(PARTITION BY d.dealership_id) lease_sales
+FROM sales s
+LEFT JOIN dealerships d ON d.dealership_id = s.dealership_id 
+WHERE s.sales_type_id = 2
+ORDER BY d.business_name;
 
 
