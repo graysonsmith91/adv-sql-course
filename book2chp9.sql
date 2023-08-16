@@ -39,4 +39,17 @@ ORDER BY d.business_name;
 
 
 
+-- Write a query that shows the purchase sales income per dealership for all of 2020.
+
+SELECT DISTINCT 
+	d.business_name,
+	SUM(s.price) over(PARTITION BY d.dealership_id) total_sales_2020
+FROM sales s 
+LEFT JOIN dealerships d ON d.dealership_id = s.dealership_id
+WHERE s.sales_type_id = 1 AND s.purchase_date >= '2020-01-01' AND s.purchase_date <= '2020-12-31' AND s.sales_type_id = 1
+ORDER BY d.business_name;
+
+
+
+
 
