@@ -21,3 +21,22 @@ LEFT JOIN vehicletypes vt ON vt.vehicle_type_id = v.vehicle_type_id
 WHERE v.is_sold = FALSE
 ORDER BY num_model DESC
 LIMIT 1;
+
+
+
+-- Which dealerships are currently selling the least number of vehicle models? This will let dealerships market vehicle models more effectively per region.
+
+SELECT DISTINCT 
+	d.business_name,
+	COUNT(s.sale_id) OVER(PARTITION BY d.dealership_id) num_sold_month
+FROM sales s
+LEFT JOIN dealerships d ON d.dealership_id = s.dealership_id 
+WHERE s.purchase_date >= (DATE '2020-07-16' - INTERVAL '90 days')
+ORDER BY num_sold_month; 
+
+
+
+
+
+
+
