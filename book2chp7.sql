@@ -128,36 +128,7 @@ ORDER BY t5.business_name, employee_sales DESC;
 
 
 
--- For the top 5 dealerships, which vehicle models were the most popular in sales?
-
-WITH top_5_dealerships AS 
-(
-    SELECT
-        d.dealership_id,
-        d.business_name,
-        COUNT(s.sale_id) AS number_of_sales
-    FROM sales s
-    LEFT JOIN dealerships d ON d.dealership_id = s.dealership_id 
-    GROUP BY d.dealership_id, d.business_name
-    ORDER BY number_of_sales DESC
-    LIMIT 5
-)
-
-SELECT 
-	d.business_name,
-	vt.model,
-	COUNT(vt.model) AS count_of_model
-FROM top_5_dealerships t5
-LEFT JOIN dealerships d ON d.dealership_id = t5.dealership_id
-LEFT JOIN sales s ON s.dealership_id = t5.dealership_id
-LEFT JOIN vehicles v ON v.vehicle_id = s.vehicle_id 
-LEFT JOIN vehicletypes vt ON vt.vehicle_type_id = v.vehicle_type_id 
-GROUP BY d.business_name, vt.model
-ORDER BY d.business_name, count_of_model DESC;
-
-
-
--- Same as above but showing top 1 for each business, William's example using a window function
+-- Same as above but showing top 1 for each business but using a window function
 
 WITH ranked AS 
 
@@ -184,6 +155,35 @@ SELECT *
 FROM ranked
 WHERE model_rank = 1 
 ORDER BY business_name, model_rank;
+
+
+
+-- For the top 5 dealerships, which vehicle models were the most popular in sales?
+
+WITH top_5_dealerships AS 
+(
+    SELECT
+        d.dealership_id,
+        d.business_name,
+        COUNT(s.sale_id) AS number_of_sales
+    FROM sales s
+    LEFT JOIN dealerships d ON d.dealership_id = s.dealership_id 
+    GROUP BY d.dealership_id, d.business_name
+    ORDER BY number_of_sales DESC
+    LIMIT 10
+)
+
+SELECT 
+	d.business_name,
+	vt.model,
+	COUNT(vt.model) AS count_of_model
+FROM top_5_dealerships t5
+LEFT JOIN dealerships d ON d.dealership_id = t5.dealership_id
+LEFT JOIN sales s ON s.dealership_id = t5.dealership_id
+LEFT JOIN vehicles v ON v.vehicle_id = s.vehicle_id 
+LEFT JOIN vehicletypes vt ON vt.vehicle_type_id = v.vehicle_type_id 
+GROUP BY d.business_name, vt.model
+ORDER BY d.business_name, count_of_model DESC;
 
 
 
