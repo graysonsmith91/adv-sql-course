@@ -86,3 +86,19 @@ WHERE s.sales_type_id = 2 AND s.purchase_date >= '2019-01-01' AND s.purchase_dat
 ORDER BY d.business_name;
 
 
+
+-- Write a query that shows the total income (purchase and lease) per employee.
+
+SELECT DISTINCT 
+	s.employee_id,
+	e.first_name || ' ' || e.last_name full_name, 
+	SUM(s.price) OVER(PARTITION BY s.employee_id) total_sales
+FROM sales s
+LEFT JOIN employees e ON e.employee_id = s.employee_id 
+WHERE s.sales_type_id = 1 OR s.sales_type_id = 2;
+
+
+
+
+
+
