@@ -157,7 +157,8 @@ ORDER BY d.business_name, count_of_model DESC;
 
 
 
--- Same as above, William's example using a window function
+-- Same as above but showing top 1 for each business, William's example using a window function
+
 WITH ranked AS 
 
 (			  
@@ -181,7 +182,7 @@ GROUP BY business_name, model
 
 SELECT *
 FROM ranked
-WHERE model_rank = 5 
+WHERE model_rank = 1 
 ORDER BY business_name, model_rank;
 
 
@@ -210,6 +211,46 @@ FROM top_5_dealerships t5
 LEFT JOIN dealerships d ON d.dealership_id = t5.dealership_id
 LEFT JOIN sales s ON s.dealership_id = t5.dealership_id
 GROUP BY d.business_name;
+
+
+
+-- For all used cars, which states sold the most? The least?
+-- States with most sold
+WITH used_cars AS 
+(
+	SELECT 
+		* 
+	FROM vehicles v 
+	WHERE v.is_new = FALSE AND v.is_sold = TRUE
+)
+
+SELECT 
+	d.state,
+	COUNT(d.state) AS number_sold
+FROM used_cars uc
+LEFT JOIN sales s ON s.vehicle_id = uc.vehicle_id
+LEFT JOIN dealerships d ON d.dealership_id = s.dealership_id 
+GROUP BY d.state
+ORDER BY number_sold DESC;
+
+-- States with least sold
+WITH used_cars AS 
+(
+	SELECT 
+		* 
+	FROM vehicles v 
+	WHERE v.is_new = FALSE AND v.is_sold = TRUE
+)
+
+SELECT 
+	d.state,
+	COUNT(d.state) AS number_sold
+FROM used_cars uc
+LEFT JOIN sales s ON s.vehicle_id = uc.vehicle_id
+LEFT JOIN dealerships d ON d.dealership_id = s.dealership_id 
+GROUP BY d.state
+ORDER BY number_sold ASC;
+
 
 
 
