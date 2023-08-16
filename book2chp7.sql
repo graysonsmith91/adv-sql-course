@@ -213,26 +213,3 @@ GROUP BY d.business_name;
 
 
 
-
--- Checking sales types
-WITH top_5_dealerships AS 
-(
-    SELECT
-        d.dealership_id,
-        d.business_name,
-        COUNT(s.sale_id) AS number_of_sales
-    FROM sales s
-    LEFT JOIN dealerships d ON d.dealership_id = s.dealership_id 
-    GROUP BY d.dealership_id, d.business_name
-    ORDER BY number_of_sales DESC
-    LIMIT 5
-)
-
-SELECT
-	*
-FROM top_5_dealerships t5
-LEFT JOIN dealerships d ON d.dealership_id = t5.dealership_id
-LEFT JOIN sales s ON s.dealership_id = t5.dealership_id
-
-
-
