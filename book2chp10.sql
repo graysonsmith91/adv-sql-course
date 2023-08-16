@@ -36,6 +36,20 @@ ORDER BY num_sold_month;
 
 
 
+-- Which dealerships are currently selling the highest number of vehicle models? This will let dealerships know which regions have either a high population, or less brand loyalty.
+
+SELECT DISTINCT 
+	d.business_name,
+	COUNT(s.sale_id) OVER(PARTITION BY d.dealership_id) num_sold_month
+FROM sales s
+LEFT JOIN dealerships d ON d.dealership_id = s.dealership_id 
+WHERE s.purchase_date >= (DATE '2020-07-16' - INTERVAL '90 days')
+ORDER BY num_sold_month DESC; 
+
+
+
+
+
 
 
 
