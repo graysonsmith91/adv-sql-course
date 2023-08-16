@@ -215,7 +215,9 @@ GROUP BY d.business_name;
 
 
 -- For all used cars, which states sold the most? The least?
+
 -- States with most sold
+
 WITH used_cars AS 
 (
 	SELECT 
@@ -234,6 +236,7 @@ GROUP BY d.state
 ORDER BY number_sold DESC;
 
 -- States with least sold
+
 WITH used_cars AS 
 (
 	SELECT 
@@ -253,4 +256,43 @@ ORDER BY number_sold ASC;
 
 
 
+-- For all used cars, which model is greatest in the inventory? Which make is greatest inventory?
+
+-- Model with greatest inventory 
+
+WITH used_cars AS 
+(
+	SELECT 
+		* 
+	FROM vehicles v 
+	WHERE v.is_new = FALSE AND v.is_sold = FALSE
+)
+
+SELECT
+	vt.model,
+	COUNT(vt.model) AS number_of_model
+FROM used_cars uc
+LEFT JOIN vehicletypes vt ON vt.vehicle_type_id = uc.vehicle_type_id
+GROUP BY vt.model 
+ORDER BY number_of_model DESC
+LIMIT 1;
+
+-- Make with greatest inventory
+
+WITH used_cars AS 
+(
+	SELECT 
+		* 
+	FROM vehicles v 
+	WHERE v.is_new = FALSE AND v.is_sold = FALSE
+)
+
+SELECT
+	vt.make,
+	COUNT(vt.make) AS number_of_make
+FROM used_cars uc
+LEFT JOIN vehicletypes vt ON vt.vehicle_type_id = uc.vehicle_type_id
+GROUP BY vt.make 
+ORDER BY number_of_make DESC
+LIMIT 1;
 
