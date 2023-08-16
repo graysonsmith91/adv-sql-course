@@ -72,3 +72,17 @@ FROM sales s
 LEFT JOIN dealerships d ON d.dealership_id = s.dealership_id 
 WHERE s.sales_type_id = 2 AND s.purchase_date >= '2020-01-01' AND s.purchase_date <= '2020-01-31'
 ORDER BY d.business_name;
+
+
+
+-- Write a query that shows the lease income per dealership for all of 2019.
+
+SELECT DISTINCT 
+	d.business_name,
+	SUM(s.price) OVER(PARTITION BY d.dealership_id) lease_sales_2019
+FROM sales s
+LEFT JOIN dealerships d ON d.dealership_id = s.dealership_id 
+WHERE s.sales_type_id = 2 AND s.purchase_date >= '2019-01-01' AND s.purchase_date <= '2019-12-31'
+ORDER BY d.business_name;
+
+
