@@ -29,3 +29,15 @@ SELECT * FROM vehicle_info
 
 
 
+-- Create a view that shows the total number of employees for each employee type.
+
+CREATE VIEW num_employeeTypes AS
+	SELECT DISTINCT 
+		et.employee_type_name,
+		COUNT(e.employee_type_id) OVER(PARTITION BY e.employee_type_id) num_employees
+	FROM employees e 
+	LEFT JOIN employeetypes et ON et.employee_type_id = e.employee_type_id 
+	ORDER BY num_employees DESC;
+
+SELECT * FROM num_employeeTypes 
+
