@@ -41,3 +41,38 @@ CREATE VIEW num_employeeTypes AS
 
 SELECT * FROM num_employeeTypes 
 
+
+
+-- Create a view that lists all customers without exposing their emails, phone numbers and street address.
+
+CREATE VIEW vw_customers_masked AS 
+	SELECT 
+		c.customer_id,
+		c.first_name,
+		c.last_name,
+		c.city,
+		c.state,
+		c.zipcode,
+		c.company_name
+	FROM customers c
+	
+SELECT * FROM vw_customers_masked 
+
+
+
+-- Create a view named sales2018 that shows the total number of sales for each sales type for the year 2018.
+
+CREATE VIEW	vw_2018_sales AS
+	SELECT DISTINCT 
+		st.sales_type_name,
+		COUNT(s.sales_type_id) OVER(PARTITION BY s.sales_type_id) num_sales
+	FROM sales s 
+	LEFT JOIN salestypes st ON st.sales_type_id = s.sales_type_id  
+	WHERE s.purchase_date >= '2018-01-01' AND s.purchase_date <= '2018-12-31'
+
+SELECT * FROM vw_2018_sales
+
+
+
+
+
