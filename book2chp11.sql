@@ -40,15 +40,12 @@ LIMIT 3;
 
 SELECT DISTINCT 
 	e.first_name || ' ' || e.last_name full_name,
-	COUNT(s.sale_id) OVER(PARTITION BY e.employee_id) num_leases
+	SUM(s.price) OVER(PARTITION BY e.employee_id) total_lease_sales
 FROM sales s 
 LEFT JOIN employees e ON e.employee_id = s.employee_id 
 WHERE s.sales_type_id = 2
-ORDER BY num_leases DESC
+ORDER BY total_lease_sales DESC
 LIMIT 2;
-
-
-
 
 
 
