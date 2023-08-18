@@ -36,3 +36,23 @@ LIMIT 3;
 
 
 
+-- Get a report on the top two employees who has made the most sales through leasing vehicles.
+
+SELECT DISTINCT 
+	e.first_name || ' ' || e.last_name full_name,
+	COUNT(s.sale_id) OVER(PARTITION BY e.employee_id) num_leases
+FROM sales s 
+LEFT JOIN employees e ON e.employee_id = s.employee_id 
+WHERE s.sales_type_id = 2
+ORDER BY num_leases DESC
+LIMIT 2;
+
+
+
+
+
+
+
+
+
+
