@@ -77,27 +77,27 @@ SELECT * FROM vw_2018_sales
 -- Create a view that shows the employee at each dealership with the most number of sales.
 -- How do I attach a rank to each of these? Maybe need subquery
 
+CREATE VIEW top_employees AS
 
-WITH employee_sales AS
-(
-	SELECT
+	WITH employee_sales AS
+	(
+		SELECT
+			business_name,
+			e.first_name || ' ' || e.last_name full_name,
+			COUNT(*) num_sales,
+			RANK() OVER (PARTITION BY business_name ORDER BY COUNT(*) DESC) AS sales_rank
+		FROM sales s 
+		LEFT JOIN employees e ON e.employee_id = s.employee_id 
+		LEFT JOIN dealerships d ON d.dealership_id = s.dealership_id 
+		GROUP BY d.business_name, full_name, s.employee_id, s.dealership_id 
+		ORDER BY d.business_name, num_sales DESC
+	)
+	
+	SELECT 
 		business_name,
-		e.first_name || ' ' || e.last_name full_name,
-		COUNT(*) num_sales,
-		RANK() OVER (PARTITION BY business_name ORDER BY COUNT(*) DESC) AS sales_rank
-	FROM sales s 
-	LEFT JOIN employees e ON e.employee_id = s.employee_id 
-	LEFT JOIN dealerships d ON d.dealership_id = s.dealership_id 
-	GROUP BY d.business_name, full_name, s.employee_id, s.dealership_id 
-	ORDER BY d.business_name, num_sales DESC
-)
+		full_name,
+		num_sales
+	FROM employee_sales
+	WHERE sales_rank = 1;
 
-SELECT 
-	business_name,
-	full_name,
-	num_sales
-FROM employee_sales
-WHERE sales_rank = 1;
-
-
-
+SELECT * FROM top_employees
