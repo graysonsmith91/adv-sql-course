@@ -75,7 +75,6 @@ SELECT * FROM vw_2018_sales
 
 
 -- Create a view that shows the employee at each dealership with the most number of sales.
--- How do I attach a rank to each of these? Maybe need subquery
 
 CREATE VIEW top_employees AS
 
