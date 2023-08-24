@@ -99,4 +99,5 @@ CREATE VIEW top_employees AS
 	FROM employee_sales
 	WHERE sales_rank = 1;
 
-SELECT * FROM top_employees
+SELECT * FROM top_employees 
+-- can right click this to show query for view
