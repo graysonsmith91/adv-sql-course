@@ -1,22 +1,23 @@
 -- Who are the top 5 employees for generating sales income?
 
-SELECT DISTINCT 
+SELECT
 	e.first_name || ' ' || e.last_name employee_name,
-	SUM(s.price) OVER(PARTITION BY s.employee_id) total_sales
+	SUM(s.price) AS total_sales
 FROM sales s 
 LEFT JOIN employees e ON e.employee_id = s.employee_id 
+GROUP BY e.first_name, e.last_name
 ORDER BY total_sales DESC
 LIMIT 5;
-
 
 
 -- Who are the top 5 dealership for generating sales income?
 
 SELECT DISTINCT 
 	d.business_name,
-	SUM(s.price) OVER(PARTITION BY s.dealership_id) total_sales
+	SUM(s.price) AS total_sales
 FROM sales s 
 LEFT JOIN dealerships d ON d.dealership_id = s.dealership_id 
+GROUP BY d.business_name 
 ORDER BY total_sales DESC
 LIMIT 5;
 
@@ -26,10 +27,11 @@ LIMIT 5;
 
 SELECT DISTINCT 
 	vt.model,
-	SUM(s.price) OVER(PARTITION BY vt.model) total_sales
+	SUM(s.price) AS total_sales
 FROM sales s 
 LEFT JOIN vehicles v ON v.vehicle_id = s.vehicle_id 
 LEFT JOIN vehicletypes vt ON vt.vehicle_type_id = v.vehicle_type_id
+GROUP BY vt.model
 ORDER BY total_sales DESC 
 LIMIT 1;
 
@@ -44,7 +46,6 @@ WITH employee_sales AS
 			e.first_name || ' ' || e.last_name full_name,
 			SUM(s.price) total_sales,
 			RANK() OVER (PARTITION BY d.business_name ORDER BY SUM(s.price) DESC) AS sales_rank
-			--RANK() OVER (PARTITION BY d.business_name, s.employee_id ORDER BY SUM(s.price) DESC) AS sales_rank
 		FROM sales s 
 		LEFT JOIN employees e ON e.employee_id = s.employee_id 
 		LEFT JOIN dealerships d ON d.dealership_id = s.dealership_id 
@@ -65,10 +66,11 @@ WITH employee_sales AS
 
 SELECT DISTINCT 
 	vt.model,
-	COUNT(vt.model) OVER(PARTITION BY vt.model) AS num_in_stock
+	COUNT(vt.model) AS num_in_stock
 FROM vehicles v 
 LEFT JOIN vehicletypes vt ON vt.vehicle_type_id = v.vehicle_type_id 
 WHERE v.is_sold = FALSE 
+GROUP BY vt.model
 ORDER BY num_in_stock DESC;
 
 
@@ -77,10 +79,11 @@ ORDER BY num_in_stock DESC;
 
 SELECT DISTINCT 
 	vt.make,
-	COUNT(vt.make) OVER(PARTITION BY vt.make) AS num_in_stock
+	COUNT(vt.make) AS num_in_stock
 FROM vehicles v 
 LEFT JOIN vehicletypes vt ON vt.vehicle_type_id = v.vehicle_type_id 
-WHERE v.is_sold = FALSE 
+WHERE v.is_sold = FALSE
+GROUP BY vt.make 
 ORDER BY num_in_stock DESC;
 
 
@@ -89,10 +92,11 @@ ORDER BY num_in_stock DESC;
 
 SELECT DISTINCT 
 	vt.body_type,
-	COUNT(vt.body_type) OVER(PARTITION BY vt.body_type) AS num_in_stock
+	COUNT(vt.body_type) AS num_in_stock
 FROM vehicles v 
 LEFT JOIN vehicletypes vt ON vt.vehicle_type_id = v.vehicle_type_id 
 WHERE v.is_sold = FALSE 
+GROUP BY vt.body_type 
 ORDER BY num_in_stock DESC;
 
 
