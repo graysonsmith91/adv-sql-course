@@ -85,4 +85,14 @@ ORDER BY num_in_stock DESC;
 
 
 
+-- In our Vehicle inventory, show the count of each BodyType that is in stock.
+
+SELECT DISTINCT 
+	vt.body_type,
+	COUNT(vt.body_type) OVER(PARTITION BY vt.body_type) AS num_in_stock
+FROM vehicles v 
+LEFT JOIN vehicletypes vt ON vt.vehicle_type_id = v.vehicle_type_id 
+WHERE v.is_sold = FALSE 
+ORDER BY num_in_stock DESC;
+
 
