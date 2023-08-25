@@ -24,14 +24,14 @@ LIMIT 5;
 
 -- Which vehicle model generated the most sales income?
 
---SELECT DISTINCT 
---	vt.model,
---	SUM(s.price) OVER(PARTITION BY vt.model) total_sales
---FROM sales s 
---LEFT JOIN vehicles v ON v.vehicle_id = s.vehicle_id 
---LEFT JOIN vehicletypes vt ON vt.vehicle_type_id = v.vehicle_type_id
---ORDER BY total_sales DESC 
---LIMIT 1;
+SELECT DISTINCT 
+	vt.model,
+	SUM(s.price) OVER(PARTITION BY vt.model) total_sales
+FROM sales s 
+LEFT JOIN vehicles v ON v.vehicle_id = s.vehicle_id 
+LEFT JOIN vehicletypes vt ON vt.vehicle_type_id = v.vehicle_type_id
+ORDER BY total_sales DESC 
+LIMIT 1;
 
 
 
