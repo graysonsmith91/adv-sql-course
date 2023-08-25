@@ -63,13 +63,13 @@ WITH employee_sales AS
 
 -- In our Vehicle inventory, show the count of each Model that is in stock.
 
---SELECT DISTINCT 
---	vt.model,
---	COUNT(vt.model) OVER(PARTITION BY vt.model) AS num_in_stock
---FROM vehicles v 
---LEFT JOIN vehicletypes vt ON vt.vehicle_type_id = v.vehicle_type_id 
---WHERE v.is_sold = FALSE 
---ORDER BY num_in_stock DESC;
+SELECT DISTINCT 
+	vt.model,
+	COUNT(vt.model) OVER(PARTITION BY vt.model) AS num_in_stock
+FROM vehicles v 
+LEFT JOIN vehicletypes vt ON vt.vehicle_type_id = v.vehicle_type_id 
+WHERE v.is_sold = FALSE 
+ORDER BY num_in_stock DESC;
 
 
 
