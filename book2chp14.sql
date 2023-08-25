@@ -12,13 +12,13 @@ LIMIT 5;
 
 -- Who are the top 5 dealership for generating sales income?
 
---SELECT DISTINCT 
---	d.business_name,
---	SUM(s.price) OVER(PARTITION BY s.dealership_id) total_sales
---FROM sales s 
---LEFT JOIN dealerships d ON d.dealership_id = s.dealership_id 
---ORDER BY total_sales DESC
---LIMIT 5;
+SELECT DISTINCT 
+	d.business_name,
+	SUM(s.price) OVER(PARTITION BY s.dealership_id) total_sales
+FROM sales s 
+LEFT JOIN dealerships d ON d.dealership_id = s.dealership_id 
+ORDER BY total_sales DESC
+LIMIT 5;
 
 
 
