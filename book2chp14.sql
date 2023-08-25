@@ -96,3 +96,16 @@ WHERE v.is_sold = FALSE
 ORDER BY num_in_stock DESC;
 
 
+
+-- Which US state's customers have the highest average purchase price for a vehicle?
+
+SELECT DISTINCT 
+	c.state,
+	AVG(s.price) OVER(PARTITION BY c.state) avg_price
+FROM sales s 
+LEFT JOIN customers c ON c.customer_id = s.customer_id 
+WHERE s.sales_type_id = 1
+ORDER BY avg_price DESC;
+
+
+
