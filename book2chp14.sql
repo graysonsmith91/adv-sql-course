@@ -109,3 +109,16 @@ ORDER BY avg_price DESC;
 
 
 
+-- Now using the data determined above, which 5 states have the customers with the highest average purchase price for a vehicle?
+
+SELECT DISTINCT 
+	c.state,
+	AVG(s.price) OVER(PARTITION BY c.state) avg_price
+FROM sales s 
+LEFT JOIN customers c ON c.customer_id = s.customer_id 
+WHERE s.sales_type_id = 1
+ORDER BY avg_price DESC
+LIMIT 5;
+
+
+
