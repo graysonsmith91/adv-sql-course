@@ -37,27 +37,27 @@ LIMIT 1;
 
 -- Which employees generate the most income per dealership?
 
---WITH employee_sales AS
---	(
---		SELECT
---			business_name,
---			e.first_name || ' ' || e.last_name full_name,
---			SUM(s.price) total_sales,
---			RANK() OVER (PARTITION BY d.business_name ORDER BY SUM(s.price) DESC) AS sales_rank
---			--RANK() OVER (PARTITION BY d.business_name, s.employee_id ORDER BY SUM(s.price) DESC) AS sales_rank
---		FROM sales s 
---		LEFT JOIN employees e ON e.employee_id = s.employee_id 
---		LEFT JOIN dealerships d ON d.dealership_id = s.dealership_id 
---		GROUP BY d.business_name, full_name, s.employee_id, s.dealership_id 
---		ORDER BY d.business_name, total_sales DESC
---	)
---	
---	SELECT 
---		business_name,
---		full_name,
---		total_sales
---	FROM employee_sales
---	WHERE sales_rank = 1;
+WITH employee_sales AS
+	(
+		SELECT
+			business_name,
+			e.first_name || ' ' || e.last_name full_name,
+			SUM(s.price) total_sales,
+			RANK() OVER (PARTITION BY d.business_name ORDER BY SUM(s.price) DESC) AS sales_rank
+			--RANK() OVER (PARTITION BY d.business_name, s.employee_id ORDER BY SUM(s.price) DESC) AS sales_rank
+		FROM sales s 
+		LEFT JOIN employees e ON e.employee_id = s.employee_id 
+		LEFT JOIN dealerships d ON d.dealership_id = s.dealership_id 
+		GROUP BY d.business_name, full_name, s.employee_id, s.dealership_id 
+		ORDER BY d.business_name, total_sales DESC
+	)
+	
+	SELECT 
+		business_name,
+		full_name,
+		total_sales
+	FROM employee_sales
+	WHERE sales_rank = 1;
 
 
 
