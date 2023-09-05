@@ -61,6 +61,43 @@ VALUES
  
  
  
+ -- Create a trigger for updates to the Sales table. If the pickup date is on or before the purchase date, set the pickup date to 7 days after the purchase date. 
+ -- If the pickup date is after the purchase date but less than 7 days out from the purchase date, add 4 additional days to the pickup date.
+ 
+CREATE FUNCTION update_pickup_date()
+  RETURNS TRIGGER
+  LANGUAGE PLPGSQL
+AS $$
+BEGIN
+  IF NEW.pickup_date <= NEW.purchase_date THEN
+    -- If pickup date is on or before the purchase date, set pickup date to 7 days after purchase date.
+    NEW.pickup_date = NEW.purchase_date + interval '7 days';
+  ELSE
+    -- If pickup date is after the purchase date but less than 7 days from the purchase date, add 4 additional days.
+    IF NEW.pickup_date <= NEW.purchase_date + interval '7 days' THEN
+      NEW.pickup_date = NEW.pickup_date + interval '4 days';
+    END IF;
+  END IF;
+
+  RETURN NEW;
+END;
+$$;
+
+
+CREATE TRIGGER update_sale_pickup_date
+  BEFORE UPDATE
+  ON sales
+  FOR EACH ROW
+  EXECUTE FUNCTION update_pickup_date();
+
+ 
+  INSERT INTO Sales (sales_type_id, vehicle_id, employee_id, customer_id, dealership_id, price, deposit, purchase_date, pickup_date, invoice_number, payment_method, sale_returned)
+VALUES
+  (1, 1, 1, 1, 1, 35000.00, 2000.00, '2023-09-05', '2023-09-06', 'INV1234567', 'Credit Card', false);
+ 
+ 
+ SELECT * FROM sales s 
+ 
  
  
  
