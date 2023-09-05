@@ -98,6 +98,7 @@ VALUES
  
  SELECT * FROM sales s 
  
+ -- this is not working correctly, it's just adding 8 days to everything
  
  
  
