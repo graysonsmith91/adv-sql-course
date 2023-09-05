@@ -26,3 +26,11 @@ INSERT INTO Sales (sales_type_id, vehicle_id, employee_id, customer_id, dealersh
 VALUES
   (1, 1, 1, 1, 1, 15000.00, 2000.00, '2023-09-01', '2023-09-10', 'INV12345', 'Credit Card', false);
 
+ 
+ 
+-- Create a trigger for when a new Sales record is added, set the purchase date to 3 days from the current date.
+ 
+ 
+ 
+ 
+ 
