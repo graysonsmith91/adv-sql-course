@@ -32,6 +32,39 @@ VALUES
 UPDATE dealerships
 SET business_name = 'Povlsen Autos of Ohio'
 WHERE business_name = 'Updated Dealership Name';
+
+
+
+-- If a phone number is not provided for a new dealership, set the phone number to the default customer care number 777-111-0305.
  
+CREATE OR REPLACE FUNCTION set_phone_default() 
+  RETURNS TRIGGER 
+  LANGUAGE PlPGSQL
+AS $$
+BEGIN
+	IF NEW.phone IS NULL THEN
+    	NEW.phone = '777-111-0305';
+  	END IF;
+	
+  	RETURN NEW;	
+END;
+$$
+
+
+CREATE OR REPLACE TRIGGER new_dealership_phone_default
+  BEFORE INSERT OR UPDATE 
+  ON dealerships
+  FOR EACH ROW
+  EXECUTE PROCEDURE set_phone_default();
+  
+INSERT INTO dealerships (business_name, phone, city, state, tax_id)
+VALUES
+  ('Testing 4', '123-456-7890', 'Nashville', 'Tennessee', 'qq-916-uz-btt2');
+ 
+SELECT * FROM dealerships
+
+
+
+
  
  

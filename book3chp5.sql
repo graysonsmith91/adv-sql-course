@@ -57,7 +57,7 @@ CREATE TRIGGER new_sale_made_purchase_date
  
  INSERT INTO Sales (sales_type_id, vehicle_id, employee_id, customer_id, dealership_id, price, deposit, purchase_date, pickup_date, invoice_number, payment_method, sale_returned)
 VALUES
-  (1, 1, 1, 1, 1, 25000.00, 2000.00, '2023-09-05', '2023-09-10', 'INV123456', 'Credit Card', false);
+  (2, 1, 1, 1, 1, 25000.00, 2000.00, '2023-09-05', '2023-09-10', 'INV123456', 'Credit Card', false);
  
  
  
