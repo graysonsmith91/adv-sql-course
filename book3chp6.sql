@@ -8,30 +8,30 @@ CREATE FUNCTION set_dealership_url()
   LANGUAGE PlPGSQL
 AS $$
 BEGIN
-  -- trigger function logic
---  UPDATE dealerships 
---  SET website = http://www.carnivalcars.com/{name of the dealership with underscores separating words}
---  WHERE dealership_id = NEW.dealership_id;
-	
-	NEW.website = 'http://www.carnivalcars.com/' || replace(LOWER(NEW.business_name), ' ', '_')
+	NEW.website = 'http://www.carnivalcars.com/' || replace(LOWER(NEW.business_name), ' ', '_');
   	RETURN NEW;	
-  --RETURN NULL;
 END;
 $$
 
 
-CREATE TRIGGER new_dealership_url
-  AFTER INSERT
-  ON dealership
+CREATE OR REPLACE TRIGGER new_dealership_url
+  BEFORE INSERT OR UPDATE 
+  ON dealerships
   FOR EACH ROW
   EXECUTE PROCEDURE set_dealership_url();
   
- SELECT * FROM dealerships
+
+SELECT * FROM dealerships
  
-INSERT INTO Sales (sales_type_id, vehicle_id, employee_id, customer_id, dealership_id, price, deposit, purchase_date, pickup_date, invoice_number, payment_method, sale_returned)
+-- Insert working correctly
+INSERT INTO dealerships (business_name, phone, city, state, tax_id)
 VALUES
-  (1, 1, 1, 1, 1, 15000.00, 2000.00, '2023-09-01', '2023-09-10', 'INV12345', 'Credit Card', false);
+  ('Testing This New One', '123-123-1234', 'Nashville', 'Tennessee', 'qq-916-uz-btt2');
   
+-- Update working correctly
+UPDATE dealerships
+SET business_name = 'Povlsen Autos of Ohio'
+WHERE business_name = 'Updated Dealership Name';
  
  
  
