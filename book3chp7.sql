@@ -133,6 +133,39 @@ $$ language plpgsql;
 
 
 
-SELECT * FROM dealershipemployees de
+-- Create a transaction for:
 
+-- Creating a new dealership in Washington, D.C. called Felphun Automotive
 
+do $$ 
+DECLARE 
+  NewDealershipId integer;
+
+BEGIN
+  INSERT INTO
+    dealerships(business_name, phone, city, state, website, tax_id)
+  VALUES
+    ('Felphun Automotive', '555-555-5555', 'Washington', 'D.C.', '', 'so-749-iz-2m09') RETURNING dealership_id INTO NewDealershipId;  
+   
+   
+-- Hire 3 new employees for the new dealership: Sales Manager, General Manager and Customer Service.
+-- 3, 6, 4 are Id's for jobs above
+   
+  INSERT INTO
+    dealershipemployees(dealership_id, employee_id)
+  VALUES
+    (NewDealershipId, 7),
+	(NewDealershipId, 1),
+    (NewDealershipId, 15);
+
+   
+-- All employees that currently work at Nelsen Autos of Illinois will now start working at Cain Autos of Missouri instead.
+-- Nelsen Autos ID: 17, Cain ID: 3
+   
+   UPDATE dealershipemployees
+   SET dealership_id = 3
+   WHERE dealership_id = 17;
+   
+END;
+
+$$ language plpgsql;
