@@ -80,6 +80,7 @@ $$ language plpgsql;
 do $$ 
 DECLARE 
   NewEmployeeTypeId integer;
+  NewEmployeeIds integer[];
 
 BEGIN
 
@@ -92,7 +93,6 @@ BEGIN
       'Automotive Mechanic'
     ) RETURNING employee_type_id INTO NewEmployeeTypeId;
    
-
 -- Add five new mechanics, their data is up to you
 
   INSERT INTO
@@ -104,55 +104,35 @@ BEGIN
       employee_type_id 
     )
   VALUES
-    (
-      'DeAaron',
-      'Fox',
-      'dfox@gmail.com',
-      '916-876-1237',
-      NewEmployeeTypeId
-    ),
-	(
-      'Keegan',
-      'Murray',
-      'kmurray@gmail.com',
-      '916-123-1234',
-      NewEmployeeTypeId
-    ),
-    (
-      'Domantas',
-      'Sabonis',
-      'dsab@gmail.com',
-      '916-345-1234',
-      NewEmployeeTypeId
-    ),
-    (
-      'Malik',
-      'Monk',
-      'mmonk@gmail.com',
-      '916-999-7589',
-      NewEmployeeTypeId
-    ),
-    (
-      'Kevin',
-      'Huerter',
-      'khuerter@gmail.com',
-      '916-354-9345',
-      NewEmployeeTypeId
-    );
+    ('DeAaron', 'Fox', 'dfox@gmail.com', '916-876-1237', NewEmployeeTypeId),
+	('Keegan', 'Murray', 'kmurray@gmail.com', '916-123-1234', NewEmployeeTypeId),
+    ('Domantas', 'Sabonis', 'dsab@gmail.com', '916-345-1234', NewEmployeeTypeId),
+    ('Malik', 'Monk', 'mmonk@gmail.com', '916-999-7589', NewEmployeeTypeId),
+    ('Kevin', 'Huerter', 'khuerter@gmail.com', '916-354-9345', NewEmployeeTypeId) 
+   RETURNING employee_id INTO NewEmployeeIds;
 
 
 -- Each new mechanic will be working at all three of these dealerships: Meeler Autos of San Diego, Meadley Autos of California and Major Autos of Florida
+-- dealership Id of 20, 36, 50
    
+   FOR i IN 1..array_length(NewEmployeeIds, 1)
+   LOOP 
+	   INSERT INTO dealershipemployees(dealership_id, employee_id)
+	   VALUES (20, NewEmployeeIds[i]),
+	          (36, NewEmployeeIds[i]),
+	          (50, NewEmployeeIds[i]);
+   END LOOP;
    
-   
-   
-   EXCEPTION WHEN others THEN 
-  -- RAISE INFO 'name:%', SQLERRM;
-  ROLLBACK;
+--   EXCEPTION WHEN others THEN 
+--   RAISE INFO 'name:%', SQLERRM;
+--   ROLLBACK;
 
 END;
 
 $$ language plpgsql;
 
+
+
+SELECT * FROM dealershipemployees de
 
 
