@@ -71,3 +71,88 @@ END;
 
 $$ language plpgsql;
 
+
+
+-- Write a transaction to:
+
+-- Add a new role for employees called Automotive Mechanic
+
+do $$ 
+DECLARE 
+  NewEmployeeTypeId integer;
+
+BEGIN
+
+  INSERT INTO
+    employeetypes(
+      employee_type_name
+    )
+  VALUES
+    (
+      'Automotive Mechanic'
+    ) RETURNING employee_type_id INTO NewEmployeeTypeId;
+   
+
+-- Add five new mechanics, their data is up to you
+
+  INSERT INTO
+    employees(
+      first_name,
+      last_name,
+      email_address,
+      phone,
+      employee_type_id 
+    )
+  VALUES
+    (
+      'DeAaron',
+      'Fox',
+      'dfox@gmail.com',
+      '916-876-1237',
+      NewEmployeeTypeId
+    ),
+	(
+      'Keegan',
+      'Murray',
+      'kmurray@gmail.com',
+      '916-123-1234',
+      NewEmployeeTypeId
+    ),
+    (
+      'Domantas',
+      'Sabonis',
+      'dsab@gmail.com',
+      '916-345-1234',
+      NewEmployeeTypeId
+    ),
+    (
+      'Malik',
+      'Monk',
+      'mmonk@gmail.com',
+      '916-999-7589',
+      NewEmployeeTypeId
+    ),
+    (
+      'Kevin',
+      'Huerter',
+      'khuerter@gmail.com',
+      '916-354-9345',
+      NewEmployeeTypeId
+    );
+
+
+-- Each new mechanic will be working at all three of these dealerships: Meeler Autos of San Diego, Meadley Autos of California and Major Autos of Florida
+   
+   
+   
+   
+   EXCEPTION WHEN others THEN 
+  -- RAISE INFO 'name:%', SQLERRM;
+  ROLLBACK;
+
+END;
+
+$$ language plpgsql;
+
+
+
