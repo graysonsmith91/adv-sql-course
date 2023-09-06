@@ -65,6 +65,33 @@ SELECT * FROM dealerships
 
 
 
+-- For accounting purposes, the name of the state needs to be part of the dealership's tax id. For example, if the tax id provided 
+-- is bv-832-2h-se8w for a dealership in Virginia, then it needs to be put into the database as bv-832-2h-se8w--virginia.
+
+CREATE OR REPLACE FUNCTION set_state_tax_id() 
+  RETURNS TRIGGER 
+  LANGUAGE PlPGSQL
+AS $$
+BEGIN
+    NEW.tax_id = NEW.tax_id || '--' || NEW.state;
+	
+  	RETURN NEW;	
+END;
+$$
+
+
+CREATE OR REPLACE TRIGGER new_state_tax_id
+  BEFORE INSERT
+  ON dealerships
+  FOR EACH ROW
+  EXECUTE PROCEDURE set_state_tax_id();
+  
+INSERT INTO dealerships (business_name, phone, city, state, tax_id)
+VALUES
+  ('Testing 5', '123-456-7890', 'Nashville', 'Tennessee', 'qq-916-uz-btt2');
+ 
+SELECT * FROM dealerships
+
 
  
  

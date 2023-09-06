@@ -59,7 +59,7 @@ CREATE TRIGGER new_sale_made_purchase_date
 VALUES
   (2, 1, 1, 1, 1, 25000.00, 2000.00, '2023-09-05', '2023-09-10', 'INV123456', 'Credit Card', false);
  
- 
+ SELECT * FROM sales
  
  -- Create a trigger for updates to the Sales table. If the pickup date is on or before the purchase date, set the pickup date to 7 days after the purchase date. 
  -- If the pickup date is after the purchase date but less than 7 days out from the purchase date, add 4 additional days to the pickup date.
