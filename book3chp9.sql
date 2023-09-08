@@ -28,46 +28,46 @@ CREATE TABLE accounts_receivable (
 ​
 /*Set up a trigger on the Sales table. When a new row is added, add a new record to the Accounts Receivable table with the deposit as credit_amount, the timestamp as date_received and the appropriate sale_id.*/
 ​
---CREATE OR REPLACE FUNCTION new_sale()
---RETURNS TRIGGER
---LANGUAGE plpgsql AS
---$$
---BEGIN
---	
---	INSERT INTO accounts_receivable (credit_amount, sale_id)
---	VALUES (NEW.deposit, NEW.sale_id)
---	; 
---
---	RETURN NEW;
---END
---$$
---;
---​
---CREATE OR REPLACE TRIGGER new_sale_update_ar
---AFTER INSERT
---ON sales
---FOR EACH ROW
---EXECUTE PROCEDURE new_sale()
---;
---​
----- Testing --
---​
---INSERT INTO sales (sales_type_id, 
---				   vehicle_id, 
---				   employee_id, 
---				   customer_id,
---				   dealership_id, 
---				   price, 
---				   deposit, 
---				   purchase_date, 
---				   pickup_date, 
---				   invoice_number, 
---				   payment_method, 
---				   sale_returned)
---VALUES (
---	2, 69, 34, 44, 4, 23442, 3224, current_date, current_date , '2232323233', 'mastercard', false);
---​
---SELECT * FROM accounts_receivable;
+CREATE OR REPLACE FUNCTION new_sale()
+RETURNS TRIGGER
+LANGUAGE plpgsql AS
+$$
+BEGIN
+	
+	INSERT INTO accounts_receivable (credit_amount, sale_id)
+	VALUES (NEW.deposit, NEW.sale_id)
+	; 
+
+	RETURN NEW;
+END
+$$
+;
+​
+CREATE OR REPLACE TRIGGER new_sale_update_ar
+AFTER INSERT
+ON sales
+FOR EACH ROW
+EXECUTE PROCEDURE new_sale()
+;
+​
+-- Testing --
+​
+INSERT INTO sales (sales_type_id, 
+				   vehicle_id, 
+				   employee_id, 
+				   customer_id,
+				   dealership_id, 
+				   price, 
+				   deposit, 
+				   purchase_date, 
+				   pickup_date, 
+				   invoice_number, 
+				   payment_method, 
+				   sale_returned)
+VALUES (
+	2, 69, 34, 44, 4, 23442, 3224, current_date, current_date , '2232323233', 'mastercard', false);
+​
+SELECT * FROM accounts_receivable;
 ​
 
 
