@@ -73,35 +73,35 @@ SELECT * FROM accounts_receivable;
 
 /*Set up a trigger on the Sales table for when the sale_returned flag is updated. Add a new row to the Accounts Receivable table with the deposit as debit_amount, the timestamp as date_received, etc.*/
 ​
---CREATE OR REPLACE FUNCTION sale_return()
---RETURNS TRIGGER
---LANGUAGE plpgsql AS
---$$
---BEGIN
---	UPDATE accounts_receivable
---	SET debit_amount = sales.deposit
---	FROM sales
---	WHERE accounts_receivable.sale_id = sales.sale_id;
---	
---	RETURN NEW;
---END
---$$;
---
---​
---CREATE OR REPLACE TRIGGER returning_sale
---AFTER UPDATE
---ON sales
---FOR EACH ROW
---EXECUTE PROCEDURE sale_return()
---;
---​
----- Testing --
---​
---UPDATE sales
---SET sale_returned = 'true'
---WHERE sale_id = 5029;
---​
---SELECT * FROM sales ORDER BY sale_id DESC
+CREATE OR REPLACE FUNCTION sale_return()
+RETURNS TRIGGER
+LANGUAGE plpgsql AS
+$$
+BEGIN
+	UPDATE accounts_receivable
+	SET debit_amount = sales.deposit
+	FROM sales
+	WHERE accounts_receivable.sale_id = sales.sale_id;
+	
+	RETURN NEW;
+END
+$$;
+
+​
+CREATE OR REPLACE TRIGGER returning_sale
+AFTER UPDATE
+ON sales
+FOR EACH ROW
+EXECUTE PROCEDURE sale_return()
+;
+​
+-- Testing --
+​
+UPDATE sales
+SET sale_returned = 'true'
+WHERE sale_id = 5029;
+​
+SELECT * FROM sales ORDER BY sale_id DESC
 ​
 SELECT * FROM accounts_receivable;
 ​
