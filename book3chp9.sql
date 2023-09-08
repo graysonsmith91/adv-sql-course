@@ -138,27 +138,27 @@ CALL add_employee_to_dealerships();
 ​
 /*Create a stored procedure with a transaction to handle an employee leaving. The employee record is removed and all records associating the employee with dealerships must also be removed.*/
 
---CREATE OR REPLACE PROCEDURE remove_employee(IN EmployeeId INT)
---LANGUAGE plpgsql
---AS $$
---  
---BEGIN
---    DELETE FROM dealershipemployees de WHERE de.employee_id = EmployeeId;
---   
---    DELETE FROM accounts_receivable WHERE sale_id IN (SELECT sale_id FROM sales WHERE employee_id = EmployeeId);
---
---    DELETE FROM sales s WHERE s.employee_id = EmployeeId;
---    
---    DELETE FROM employees e WHERE e.employee_id = EmployeeId;
---    
---COMMIT;
---
---END;
---$$;
---
---
---CALL remove_employee(1010);
---
---SELECT * FROM dealershipemployees d ORDER BY dealership_employee_id DESC;
---SELECT * FROM employees e ORDER BY e.employee_id DESC;
---SELECT * FROM sales s ORDER BY s.sale_id DESC;
+CREATE OR REPLACE PROCEDURE remove_employee(IN EmployeeId INT)
+LANGUAGE plpgsql
+AS $$
+  
+BEGIN
+    DELETE FROM dealershipemployees de WHERE de.employee_id = EmployeeId;
+   
+    DELETE FROM accounts_receivable WHERE sale_id IN (SELECT sale_id FROM sales WHERE employee_id = EmployeeId);
+
+    DELETE FROM sales s WHERE s.employee_id = EmployeeId;
+    
+    DELETE FROM employees e WHERE e.employee_id = EmployeeId;
+    
+COMMIT;
+
+END;
+$$;
+
+
+CALL remove_employee(1010);
+
+SELECT * FROM dealershipemployees d ORDER BY dealership_employee_id DESC;
+SELECT * FROM employees e ORDER BY e.employee_id DESC;
+SELECT * FROM sales s ORDER BY s.sale_id DESC;
