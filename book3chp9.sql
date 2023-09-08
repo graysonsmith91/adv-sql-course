@@ -109,30 +109,30 @@ SELECT * FROM accounts_receivable;
 
 /*Create a stored procedure with a transaction to handle hiring a new employee. Add a new record for the employee in the Employees table and add a record to the Dealershipemployees table for the two dealerships the new employee will start at.*/
 
---CREATE OR REPLACE PROCEDURE add_employee_to_dealerships()
---LANGUAGE plpgsql
---AS $$
---DECLARE 
---  NewEmployeeId integer;
---  
---BEGIN
---    INSERT INTO employees (first_name, last_name, email_address, phone, employee_type_id)
---    VALUES ('John', 'Doe', 'johndoe@example.com', '123-456-7890', 1)
---		RETURNING employee_id INTO NewEmployeeId;
---
---COMMIT;
---
---	    INSERT INTO dealershipemployees (dealership_id, employee_id)
---    	VALUES (1, NewEmployeeId),
---    		   (2, NewEmployeeId);
---		
---COMMIT;
---
---END;
---$$;
---
---
---CALL add_employee_to_dealerships();
+CREATE OR REPLACE PROCEDURE add_employee_to_dealerships()
+LANGUAGE plpgsql
+AS $$
+DECLARE 
+  NewEmployeeId integer;
+  
+BEGIN
+    INSERT INTO employees (first_name, last_name, email_address, phone, employee_type_id)
+    VALUES ('John', 'Doe', 'johndoe@example.com', '123-456-7890', 1)
+		RETURNING employee_id INTO NewEmployeeId;
+
+COMMIT;
+
+	    INSERT INTO dealershipemployees (dealership_id, employee_id)
+    	VALUES (1, NewEmployeeId),
+    		   (2, NewEmployeeId);
+		
+COMMIT;
+
+END;
+$$;
+
+
+CALL add_employee_to_dealerships();
 
 
 ​
