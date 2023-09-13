@@ -48,9 +48,9 @@
 -- Discuss the improvements as a team and why they would provide a benefit to the business. Please draw on all the knowledge you have gotten from this course to implement your ideas! Once you have found some improvements, create a .Sql script to implement those improvements.
 ​
 ​
-DROP TABLE IF EXISTS VehicleBodyType;
-DROP TABLE IF EXISTS VehicleModel;
-DROP TABLE IF EXISTS VehicleMake;
+DROP TABLE IF EXISTS VehicleBodyType CASCADE;
+DROP TABLE IF EXISTS VehicleModel CASCADE;
+DROP TABLE IF EXISTS VehicleMake CASCADE;
 ​
 CREATE TABLE VehicleBodyType (
 	vehicle_body_type_id SERIAL PRIMARY KEY,
@@ -63,10 +63,10 @@ CREATE TABLE VehicleModel (
 	);
 	
 CREATE TABLE VehicleMake (
-	vehicle_make SERIAL PRIMARY KEY,
+	vehicle_make_id SERIAL PRIMARY KEY,
 	name varchar (20)
 	);
-	
+​
 INSERT INTO VehicleBodyType (name)
 SELECT DISTINCT(body_type) FROM vehicletypes;
 ​
@@ -75,13 +75,8 @@ SELECT DISTINCT(model) FROM vehicletypes;
 ​
 INSERT INTO VehicleMake (name)
 SELECT DISTINCT(make) FROM vehicletypes;
-​
-SELECT vehicle_type_id, vehicle_body_type_id, vehicle_model_id, vehicle_make
-FROM vehicletypes
-	LEFT JOIN VehicleBodyType ON vehicletypes.body_type = VehicleBodyType.name
-	LEFT JOIN VehicleModel ON vehicletypes.model = VehicleModel.name
-	LEFT JOIN VehicleMake ON vehicletypes.make = VehicleMake.name
-​
+		
+	-- Creating vehicletypes vehicle_body_type_id column, establishing constraint, populating data.
 -- Create new column on vehicletypes table
 ALTER TABLE vehicletypes
 ADD COLUMN vehicle_body_type_id INT;
@@ -96,22 +91,37 @@ SET vehicle_body_type_id = VehicleBodyType.vehicle_body_type_id
 FROM VehicleBodyType
 WHERE vehicletypes.body_type = VehicleBodyType.name;
 ​
+	-- Creating vehicletypes vehicle_model_id column, establishing constraint, populating data
+-- Create new column on vehicletypes table
 ALTER TABLE vehicletypes
-ADD vehicle_model_id INT;
+ADD COLUMN vehicle_model_id INT;
 ​
+-- Create constraint referencing key in newly created table
+ALTER TABLE vehicletypes
+ADD CONSTRAINT vehicle_model_id FOREIGN KEY (vehicle_model_id) REFERENCES VehicleModel (vehicle_model_id);
 ​
+-- Update new column on vehicletypes with appropriate values from foreign table.
+UPDATE vehicletypes
+SET vehicle_model_id = VehicleModel.vehicle_model_id
+FROM VehicleModel
+WHERE vehicletypes.model = VehicleModel.name;
 ​
+	-- Creating vehicletypes vehicle_make_id column, establishing constraint, populating data
+-- Create new column on vehicletypes table
+ALTER TABLE vehicletypes
+ADD COLUMN vehicle_make_id INT;
 ​
-SELECT *
-FROM vehicletypes;
--- Things you might find useful
--- Creating tables
--- Altering exsiting tables
--- Drop statements
--- Views
--- Triggers (Formatting data or ensuring new related records get created)
--- Stored Procedures that group functionality
--- Transactions
--- Indexing
--- Data migrations
--- Normalizing the database further vs denormalizing
+-- Create constraint referencing key in newly created table
+ALTER TABLE vehicletypes
+ADD CONSTRAINT make_id FOREIGN KEY (vehicle_make_id) REFERENCES VehicleMake (vehicle_make_id);
+​
+-- Update new column on vehicletypes with appropriate values from foreign table.
+UPDATE vehicletypes
+SET vehicle_make_id = VehicleMake.vehicle_make_id
+FROM VehicleMake
+WHERE vehicletypes.make = VehicleMake.name;
+​
+ALTER TABLE vehicletypes
+DROP COLUMN body_type,
+DROP COLUMN make,
+DROP COLUMN model;
