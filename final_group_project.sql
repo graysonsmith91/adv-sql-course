@@ -66,7 +66,7 @@ CREATE TABLE VehicleMake (
 	vehicle_make_id SERIAL PRIMARY KEY,
 	name varchar (20)
 	);
-​
+
 INSERT INTO VehicleBodyType (name)
 SELECT DISTINCT(body_type) FROM vehicletypes;
 ​
@@ -125,3 +125,7 @@ ALTER TABLE vehicletypes
 DROP COLUMN body_type,
 DROP COLUMN make,
 DROP COLUMN model;
+
+-- Testing vehicletypes table
+
+SELECT * FROM vehicletypes
