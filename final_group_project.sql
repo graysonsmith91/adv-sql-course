@@ -129,3 +129,16 @@ DROP COLUMN model;
 -- Testing vehicletypes table
 
 SELECT * FROM vehicletypes
+
+-- Creating a view for how the original vehicletypes table looked 
+
+CREATE VIEW vehicletypes_og AS
+SELECT 
+	vehicle_type_id,
+	vehiclemake.name AS make,
+	vehiclemodel.name AS model,
+	vehiclebodytype.name AS body_type
+FROM vehicletypes
+	LEFT JOIN vehiclemake USING (vehicle_make_id)
+	LEFT JOIN vehiclemodel USING (vehicle_model_id)
+	LEFT JOIN vehiclebodytype USING (vehicle_body_type_id);
