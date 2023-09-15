@@ -47,11 +47,15 @@
 	
 -- Discuss the improvements as a team and why they would provide a benefit to the business. Please draw on all the knowledge you have gotten from this course to implement your ideas! Once you have found some improvements, create a .Sql script to implement those improvements.
 ​
-​
+do $$
+
+BEGIN
+
 DROP TABLE IF EXISTS VehicleBodyType CASCADE;
 DROP TABLE IF EXISTS VehicleModel CASCADE;
 DROP TABLE IF EXISTS VehicleMake CASCADE;
-​
+
+-- Initializing new tables
 CREATE TABLE VehicleBodyType (
 	vehicle_body_type_id SERIAL PRIMARY KEY,
 	name varchar (20)
@@ -67,68 +71,96 @@ CREATE TABLE VehicleMake (
 	name varchar (20)
 	);
 
+-- Inserting relevant data for new tables.
 INSERT INTO VehicleBodyType (name)
-SELECT DISTINCT(body_type) FROM vehicletypes;
-​
+SELECT DISTINCT(body_type) FROM vehicletypes_og;
+
 INSERT INTO VehicleModel (name)
-SELECT DISTINCT(model) FROM vehicletypes;
-​
+SELECT DISTINCT(model) FROM vehicletypes_og;
+
 INSERT INTO VehicleMake (name)
-SELECT DISTINCT(make) FROM vehicletypes;
+SELECT DISTINCT(make) FROM vehicletypes_og;
 		
 	-- Creating vehicletypes vehicle_body_type_id column, establishing constraint, populating data.
 -- Create new column on vehicletypes table
-ALTER TABLE vehicletypes
+ALTER TABLE vehicletypes_og
 ADD COLUMN vehicle_body_type_id INT;
-​
+
 -- Create constraint referencing key in newly created table
-ALTER TABLE vehicletypes
+ALTER TABLE vehicletypes_og
 ADD CONSTRAINT body_type_id FOREIGN KEY (vehicle_body_type_id) REFERENCES VehicleBodyType (vehicle_body_type_id);
-​
+
 -- Update new column on vehicletypes with appropriate values from foreign table.
-UPDATE vehicletypes
+UPDATE vehicletypes_og
 SET vehicle_body_type_id = VehicleBodyType.vehicle_body_type_id
 FROM VehicleBodyType
-WHERE vehicletypes.body_type = VehicleBodyType.name;
-​
+WHERE vehicletypes_og.body_type = VehicleBodyType.name;
+
 	-- Creating vehicletypes vehicle_model_id column, establishing constraint, populating data
 -- Create new column on vehicletypes table
-ALTER TABLE vehicletypes
+ALTER TABLE vehicletypes_og
 ADD COLUMN vehicle_model_id INT;
-​
+
 -- Create constraint referencing key in newly created table
-ALTER TABLE vehicletypes
+ALTER TABLE vehicletypes_og
 ADD CONSTRAINT vehicle_model_id FOREIGN KEY (vehicle_model_id) REFERENCES VehicleModel (vehicle_model_id);
-​
+
 -- Update new column on vehicletypes with appropriate values from foreign table.
-UPDATE vehicletypes
+UPDATE vehicletypes_og
 SET vehicle_model_id = VehicleModel.vehicle_model_id
 FROM VehicleModel
-WHERE vehicletypes.model = VehicleModel.name;
-​
+WHERE vehicletypes_og.model = VehicleModel.name;
+
 	-- Creating vehicletypes vehicle_make_id column, establishing constraint, populating data
 -- Create new column on vehicletypes table
-ALTER TABLE vehicletypes
+ALTER TABLE vehicletypes_og
 ADD COLUMN vehicle_make_id INT;
-​
+
 -- Create constraint referencing key in newly created table
-ALTER TABLE vehicletypes
+ALTER TABLE vehicletypes_og
 ADD CONSTRAINT make_id FOREIGN KEY (vehicle_make_id) REFERENCES VehicleMake (vehicle_make_id);
-​
+
 -- Update new column on vehicletypes with appropriate values from foreign table.
-UPDATE vehicletypes
+UPDATE vehicletypes_og
 SET vehicle_make_id = VehicleMake.vehicle_make_id
 FROM VehicleMake
-WHERE vehicletypes.make = VehicleMake.name;
-​
-ALTER TABLE vehicletypes
+WHERE vehicletypes_og.make = VehicleMake.name;
+
+-- Dropping old columns
+ALTER TABLE vehicletypes_og
 DROP COLUMN body_type,
 DROP COLUMN make,
 DROP COLUMN model;
 
--- Testing vehicletypes table
+COMMIT;
 
-SELECT * FROM vehicletypes
+END;
+
+$$ language plpgsql;
+
+
+-- Creating table in original format for transaction testing.
+​
+CREATE TABLE vehicletypes_og (
+	vehicle_type_id int,
+	make varchar (20),
+	model varchar (20),
+	body_type varchar (20));
+​
+INSERT INTO vehicletypes_og (
+	vehicle_type_id,
+	make,
+	model,
+	body_type)
+SELECT vt.vehicle_type_id AS vehicle_type_id, vma.name AS make, vmo.name AS model, vbt.name AS body_type
+FROM vehicletypes AS vt
+	LEFT JOIN vehiclemake AS vma USING (vehicle_make_id) 
+	LEFT JOIN vehiclemodel AS vmo USING (vehicle_model_id)
+	LEFT JOIN vehiclebodytype AS vbt USING (vehicle_body_type_id);
+
+-- Testing vehicletypes_og table
+
+SELECT * FROM vehicletypes_og
 
 -- Creating a view for how the original vehicletypes table looked 
 
@@ -142,3 +174,5 @@ FROM vehicletypes
 	LEFT JOIN vehiclemake USING (vehicle_make_id)
 	LEFT JOIN vehiclemodel USING (vehicle_model_id)
 	LEFT JOIN vehiclebodytype USING (vehicle_body_type_id);
+	
+
